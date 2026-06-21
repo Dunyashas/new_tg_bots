@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>На Луне — Лаунж Бар</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root {
     --bg: #07050f;
@@ -38,7 +37,6 @@
     overflow-x: hidden;
   }
 
-  /* Stars background */
   body::before {
     content: '';
     position: fixed;
@@ -60,14 +58,13 @@
       radial-gradient(1px 1px at 78% 88%, rgba(255,255,255,0.4) 0%, transparent 100%),
       radial-gradient(1.5px 1.5px at 22% 22%, rgba(176,110,243,0.6) 0%, transparent 100%),
       radial-gradient(1.5px 1.5px at 66% 44%, rgba(34,211,238,0.5) 0%, transparent 100%),
-      radial-gradient(1.5px 1.5px at 88% 66%, rgba(244,114,182,0.5) 0%, transparent 100%);
+      radial-gradient(1.5px 1.5px at 88% 66%, rgba(244,114,182,0.5) 0%, transparent 100px);
     pointer-events: none;
     z-index: 0;
   }
 
   #app { position: relative; z-index: 1; }
 
-  /* Header */
   .header {
     text-align: center;
     padding: 28px 20px 16px;
@@ -104,48 +101,75 @@
     opacity: 0.8;
   }
 
-  /* Nav tabs */
-  .nav {
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 72px;
+    background: linear-gradient(to top, #090614 80%, rgba(9,6,20,0.95));
+    border-top: 1px solid var(--border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     display: flex;
-    gap: 6px;
-    padding: 0 12px 14px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-  .nav::-webkit-scrollbar { display: none; }
-
-  .nav-btn {
-    flex-shrink: 0;
-    padding: 8px 14px;
-    border-radius: 40px;
-    border: 1px solid var(--border2);
-    background: transparent;
-    color: var(--text2);
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-    display: flex;
+    justify-content: space-around;
     align-items: center;
-    gap: 5px;
+    padding: 0 10px 12px;
+    z-index: 1000;
+    box-shadow: 0 -8px 24px rgba(0,0,0,0.6);
   }
 
-  .nav-btn.active {
-    background: linear-gradient(135deg, var(--purple2), #9333ea);
-    border-color: transparent;
-    color: #fff;
-    box-shadow: 0 0 16px rgba(124,58,237,0.5);
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--text3);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%;
+    padding: 0 4px;
+    min-width: 60px;
+    position: relative;
   }
 
-  .nav-btn .icon { font-size: 14px; }
+  .nav-item .nav-icon {
+    font-size: 22px;
+    margin-bottom: 4px;
+    transition: transform 0.25s, color 0.25s;
+    opacity: 0.6;
+  }
 
-  /* Sections */
+  .nav-item.active {
+    color: var(--purple);
+    text-shadow: 0 0 10px rgba(176,110,243,0.3);
+  }
+
+  .nav-item.active .nav-icon {
+    transform: translateY(-4px) scale(1.1);
+    color: var(--purple);
+    opacity: 1;
+  }
+
+  .nav-item.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    width: 16px;
+    height: 3px;
+    background: var(--purple);
+    border-radius: 4px;
+    box-shadow: 0 0 8px var(--purple);
+  }
+
   .section { display: none; padding: 0 12px 100px; }
   .section.active { display: block; }
 
-  /* Home screen */
   .hero-moon {
     text-align: center;
     padding: 10px 0 20px;
@@ -172,15 +196,6 @@
     top: 22px; left: 28px;
   }
 
-  .moon-circle::after {
-    content: '';
-    position: absolute;
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: rgba(0,0,0,0.12);
-    top: 50px; left: 50px;
-  }
-
   .hero-title {
     font-size: 22px;
     font-weight: 700;
@@ -194,7 +209,6 @@
     line-height: 1.5;
   }
 
-  /* Quick action grid */
   .quick-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -226,7 +240,6 @@
   }
 
   .quick-card:active { transform: scale(0.97); }
-
   .quick-card .qc-icon { font-size: 24px; margin-bottom: 8px; }
   .quick-card .qc-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
   .quick-card .qc-sub { font-size: 11px; color: var(--text3); }
@@ -236,7 +249,6 @@
   .quick-card.pink { --accent: var(--pink); border-color: rgba(244,114,182,0.3); }
   .quick-card.gold { --accent: var(--gold); border-color: rgba(251,191,36,0.3); }
 
-  /* Info cards */
   .info-card {
     background: var(--card);
     border: 1px solid var(--border);
@@ -280,11 +292,9 @@
     font-size: 13px;
     color: var(--text);
     line-height: 1.6;
+    white-space: pre-line;
   }
 
-  .script-answer strong { color: var(--purple); }
-
-  /* Menu section */
   .menu-cats {
     display: flex;
     gap: 6px;
@@ -297,12 +307,12 @@
 
   .cat-btn {
     flex-shrink: 0;
-    padding: 6px 12px;
+    padding: 8px 14px;
     border-radius: 30px;
     border: 1px solid var(--border);
     background: transparent;
     color: var(--text2);
-    font-size: 11px;
+    font-size: 12px;
     cursor: pointer;
     transition: all 0.18s;
     white-space: nowrap;
@@ -312,6 +322,7 @@
     background: var(--card2);
     border-color: var(--border2);
     color: var(--purple);
+    box-shadow: var(--glow);
   }
 
   .menu-group { display: none; }
@@ -336,7 +347,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    padding: 10px 14px;
+    padding: 12px 14px;
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
@@ -356,7 +367,52 @@
     align-self: center;
   }
 
-  /* Booking section */
+  .booking-cutoff-banner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, rgba(244,114,182,0.14), rgba(176,110,243,0.1));
+    border: 1px solid rgba(244,114,182,0.4);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 18px;
+    position: relative;
+    overflow: hidden;
+    animation: cutoffGlow 2.6s ease-in-out infinite;
+  }
+
+  @keyframes cutoffGlow {
+    0%, 100% { box-shadow: 0 0 0 rgba(244,114,182,0); }
+    50% { box-shadow: 0 0 22px rgba(244,114,182,0.35); }
+  }
+
+  .booking-cutoff-banner .cutoff-icon {
+    font-size: 26px;
+    flex-shrink: 0;
+  }
+
+  .booking-cutoff-banner .cutoff-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--pink);
+    margin-bottom: 2px;
+  }
+
+  .booking-cutoff-banner .cutoff-sub {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.4;
+  }
+
+  .required-mark { color: var(--pink); font-weight: 700; }
+
+  .time-hint {
+    font-size: 11px;
+    color: var(--pink);
+    margin-top: 6px;
+    opacity: 0.85;
+  }
+
   .booking-type-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -399,11 +455,11 @@
     outline: none;
     transition: border-color 0.2s;
     -webkit-appearance: none;
+    appearance: none;
   }
 
   .form-input:focus { border-color: var(--purple); }
   .form-input::placeholder { color: var(--text3); }
-
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
   .submit-btn {
@@ -438,7 +494,6 @@
   .booking-result .br-title { font-size: 17px; font-weight: 700; color: var(--cyan); margin-bottom: 8px; }
   .booking-result .br-text { font-size: 13px; color: var(--text2); line-height: 1.6; }
 
-  /* Rules section */
   .rule-card {
     background: var(--card);
     border: 1px solid var(--border);
@@ -468,7 +523,6 @@
   .rule-text { font-size: 13px; color: var(--text2); line-height: 1.6; }
   .rule-text strong { color: var(--pink); font-weight: 600; }
 
-  /* Entry prices */
   .entry-day {
     background: var(--card);
     border: 1px solid var(--border);
@@ -499,7 +553,6 @@
   .entry-time { font-size: 13px; color: var(--text2); }
   .entry-price { font-size: 14px; font-weight: 600; color: var(--gold); }
 
-  /* Section title */
   .section-heading {
     font-size: 20px;
     font-weight: 700;
@@ -510,7 +563,6 @@
     gap: 8px;
   }
 
-  /* Hookah section in menu */
   .hookah-card {
     background: linear-gradient(135deg, rgba(176,110,243,0.1), rgba(34,211,238,0.05));
     border: 1px solid rgba(176,110,243,0.3);
@@ -526,39 +578,6 @@
   .hookah-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
   .hookah-price { font-size: 18px; font-weight: 700; color: var(--purple); }
 
-  /* Bottom nav */
-  .bottom-nav {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    background: rgba(13,10,30,0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid var(--border);
-    display: flex;
-    padding: 8px 4px 20px;
-    z-index: 100;
-  }
-
-  .bn-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    padding: 6px 4px;
-    cursor: pointer;
-    border-radius: var(--radius-sm);
-    transition: all 0.15s;
-    border: none;
-    background: transparent;
-    color: var(--text3);
-  }
-
-  .bn-item.active { color: var(--purple); }
-  .bn-item .bn-icon { font-size: 20px; }
-  .bn-item .bn-label { font-size: 9px; letter-spacing: 0.5px; text-transform: uppercase; }
-
-  /* Special offers */
   .special-card {
     background: linear-gradient(135deg, rgba(251,191,36,0.08), rgba(176,110,243,0.06));
     border: 1px solid rgba(251,191,36,0.25);
@@ -585,24 +604,6 @@
   .special-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
   .special-desc { font-size: 13px; color: var(--text2); line-height: 1.55; }
 
-  /* Divider */
-  .divider {
-    height: 1px;
-    background: var(--border);
-    margin: 16px 0;
-  }
-
-  /* Script section */
-  .script-section-title {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--cyan);
-    margin: 18px 0 8px;
-  }
-
-  /* Admin problems */
   .problem-card {
     background: var(--card);
     border: 1px solid rgba(244,114,182,0.2);
@@ -639,23 +640,18 @@
     margin-bottom: 4px;
   }
 
-  .tag-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 2px 8px;
+  .copy-btn {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, var(--purple2), #9333ea);
+    border: none;
     border-radius: 20px;
-    font-size: 10px;
+    color: #fff;
+    font-size: 12px;
     font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-right: 4px;
-    margin-bottom: 4px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(124,58,237,0.3);
   }
-
-  .tag-free { background: rgba(74,222,128,0.12); color: #4ade80; }
-  .tag-dj { background: rgba(176,110,243,0.15); color: var(--purple); }
-  .tag-vip { background: rgba(251,191,36,0.12); color: var(--gold); }
-
 </style>
 </head>
 <body>
@@ -665,38 +661,15 @@
   <div class="header">
     <div class="header-logo">НА ЛУН≡</div>
     <div class="header-sub">л а у н ж &nbsp; б а р</div>
-    <div class="moon-badge">🌙 &nbsp;минск &nbsp;·&nbsp; каждую ночь</div>
-  </div>
-
-  <!-- Nav tabs (top scrollable) -->
-  <div class="nav">
-    <button class="nav-btn active" onclick="showSection('home')" id="nav-home">
-      <span class="icon">🌕</span> Главная
-    </button>
-    <button class="nav-btn" onclick="showSection('menu')" id="nav-menu">
-      <span class="icon">🍹</span> Меню
-    </button>
-    <button class="nav-btn" onclick="showSection('booking')" id="nav-booking">
-      <span class="icon">📅</span> Бронь
-    </button>
-    <button class="nav-btn" onclick="showSection('scripts')" id="nav-scripts">
-      <span class="icon">💬</span> Скрипты
-    </button>
-    <button class="nav-btn" onclick="showSection('rules')" id="nav-rules">
-      <span class="icon">📋</span> Правила
-    </button>
-    <button class="nav-btn" onclick="showSection('admin')" id="nav-admin" style="display:none;">
-      <span class="icon">⚡</span> Админу
-    </button>
+    <div class="moon-badge">🌙 &nbsp;Гродно &nbsp;·&nbsp; Чт-Вс 19:00-01:00 · Пт-Сб 19:00-06:00</div>
   </div>
 
   <!-- =================== HOME =================== -->
   <div class="section active" id="section-home">
-
     <div class="hero-moon">
       <div class="moon-circle"></div>
-      <div class="hero-title">Добро пожаловать на орбиту 🚀</div>
-      <div class="hero-sub">Лаунж-бар «На Луне» — место где звёзды ближе</div>
+      <div class="hero-title">Добро пожаловать на орбиту</div>
+      <div class="hero-sub">Лаунж-бар «На Луне» — место, где звёзды ближе</div>
     </div>
 
     <div class="quick-grid">
@@ -713,74 +686,43 @@
       <div class="quick-card cyan" onclick="showSection('menu')">
         <div class="qc-icon">🍸</div>
         <div class="qc-title">Меню бара</div>
-        <div class="qc-sub">коктейли, кальяны</div>
+        <div class="qc-sub">полный список</div>
       </div>
-      <div class="quick-card pink" onclick="showSection('rules')">
+      <div class="quick-card pink" onclick="openDjShowCard()">
         <div class="qc-icon">🎵</div>
-        <div class="qc-title">DJ-программа</div>
-        <div class="qc-sub">пт-сб с 23:00</div>
+        <div class="qc-title">DJ & Караоке</div>
+        <div class="qc-sub">каждую ночь</div>
       </div>
+
     </div>
 
     <div class="special-card">
       <div class="special-tag">🎂 день рождения</div>
       <div class="special-title">Скидка 20% в ваш день!</div>
-      <div class="special-desc">При предзаказе от 80р/гость — скидка 20% на всю кухню и поздравление от заведения 🥂</div>
+      <div class="special-desc">При предзаказе от 80р/гость — скидка 20% на всю кухню и праздничная атмосфера от команды 🥂</div>
+    </div>
+
+    <div class="special-card" style="background: linear-gradient(135deg, rgba(176,110,243,0.08), rgba(244,114,182,0.06)); border-color: rgba(176,110,243,0.25);">
+      <div class="special-tag" style="background: rgba(176,110,243,0.15); color: var(--purple);">🔥 Акция Чт и Вс</div>
+      <div class="special-title">По промо-коду «Дым»</div>
+      <div class="special-desc">2 кальяна по цене одного «Premium» 💨</div>
     </div>
 
     <div class="special-card" style="background: linear-gradient(135deg, rgba(34,211,238,0.08), rgba(176,110,243,0.05)); border-color: rgba(34,211,238,0.25);">
-      <div class="special-tag" style="background: rgba(34,211,238,0.12); color: var(--cyan);">🥃 свой алкоголь</div>
-      <div class="special-title">Разрешаем свой алкоголь</div>
-      <div class="special-desc">При заказе от 100р/гость — приносите своё спиртное без пробкового сбора. Бонус: 1 бутылка от нас на 3 человека.</div>
-    </div>
-
-    <div class="info-card">
-      <div class="info-card-header" onclick="toggleCard(this)">
-        <span class="ic-icon">⏰</span>
-        <span class="ic-title" style="color: var(--gold)">Вход и DJ-программа</span>
-        <span class="ic-arrow">▾</span>
-      </div>
-      <div class="info-card-body">
-        <div class="entry-day">
-          <div class="entry-day-title">🎉 Пятница</div>
-          <div class="entry-row">
-            <span class="entry-time">До 23:00</span>
-            <span class="entry-price" style="color: #4ade80">Бесплатно</span>
-          </div>
-          <div class="entry-row">
-            <span class="entry-time">С 23:00 (уже внутри)</span>
-            <span class="entry-price">10р</span>
-          </div>
-          <div class="entry-row">
-            <span class="entry-time">После 24:00</span>
-            <span class="entry-price">15р</span>
-          </div>
-        </div>
-        <div class="entry-day">
-          <div class="entry-day-title">🎉 Суббота</div>
-          <div class="entry-row">
-            <span class="entry-time">До 23:00</span>
-            <span class="entry-price" style="color: #4ade80">Бесплатно</span>
-          </div>
-          <div class="entry-row">
-            <span class="entry-time">С 23:00 (уже внутри)</span>
-            <span class="entry-price">10р</span>
-          </div>
-          <div class="entry-row">
-            <span class="entry-time">После 23:00 (вход с улицы)</span>
-            <span class="entry-price">15р</span>
-          </div>
-        </div>
-      </div>
+      <div class="special-tag" style="background: rgba(34,211,238,0.12); color: var(--cyan);">🥃 акция «свой алкоголь»</div>
+      <div class="special-title">Пронос любимых напитков разрешен</div>
+      <div class="special-desc">Вы можете свободно дополнить вечер своим крепким алкоголем без пробкового сбора. Условие простое: оформляется предварительный заказ кухни и бара на сумму от 100 рублей на каждого человека. В эту стоимость уже входит символический алкоголь от заведения! *(Например: для компании из 6 человек предзаказ составляет от 600 рублей).*</div>
     </div>
 
     <div class="info-card">
       <div class="info-card-header" onclick="toggleCard(this)">
         <span class="ic-icon">👗</span>
-        <span class="ic-title" style="color: var(--pink)">Дресс-код</span>
+        <span class="ic-title" style="color: var(--pink)">Дресс-код & Face Control</span>
         <span class="ic-arrow">▾</span>
       </div>
       <div class="info-card-body">
+        <div style="font-size: 13px; color: var(--text2); margin-bottom: 10px;">Вход строго с <b>18 лет</b>. Обязателен оригинал паспорта или водительского удостоверения. Одежда в спортивном стиле не допускается.</div>
+        
         <div class="script-box">
           <div class="script-question">Для мужчин</div>
           <div class="script-answer">Брюки, рубашки, пиджаки, клубная одежда, туфли</div>
@@ -793,61 +735,56 @@
       </div>
     </div>
 
+    <div class="info-card" id="dj-show-card">
+      <div class="info-card-header" onclick="toggleCard(this)">
+        <span class="ic-icon">⏰</span>
+        <span class="ic-title" style="color: var(--gold)">Вход, DJ-шоу и Караоке</span>
+        <span class="ic-arrow">▾</span>
+      </div>
+      <div class="info-card-body">
+        <div class="entry-day">
+          <div class="entry-day-title">📆 Четверг и Воскресенье (19:00 - 01:00)</div>
+          <div class="entry-row"><span class="entry-time">Вход в заведение</span><span class="entry-price" style="color: #4ade80">Бесплатно</span></div>
+          <div class="entry-row"><span class="entry-time">Караоке (с 19:00)</span><span class="entry-price" style="color: #4ade80">Бесплатно</span></div>
+        </div>
+        <div class="entry-day">
+          <div class="entry-day-title">🎉 Пятница (19:00 - 06:00)</div>
+          <div class="entry-row"><span class="entry-time">До 23:00 (Вход)</span><span class="entry-price" style="color: #4ade80">Бесплатно</span></div>
+          <div class="entry-row"><span class="entry-time">Караоке (с 21:00)</span><span class="entry-price" style="color: #4ade80">Бесплатно</span></div>
+          <div class="entry-row"><span class="entry-time">Вход с улицы после 23:00</span><span class="entry-price">15р</span></div>
+          <div class="entry-row"><span class="entry-time">Для тех, кто уже внутри (с 24:00 за DJ)</span><span class="entry-price">10р</span></div>
+        </div>
+        <div class="entry-day">
+          <div class="entry-day-title">🎉 Суббота (19:00 - 06:00)</div>
+          <div class="entry-row"><span class="entry-time">До 23:00 (Вход)</span><span class="entry-price" style="color: #4ade80">Бесплатно</span></div>
+          <div class="entry-row"><span class="entry-time">Караоке (с 21:00)</span><span class="entry-price" style="color: #4ade80">Бесплатно</span></div>
+          <div class="entry-row"><span class="entry-time">Для тех, кто уже внутри (с 23:00 за DJ)</span><span class="entry-price">10р</span></div>
+          <div class="entry-row"><span class="entry-time">Вход с улицы после 24:00</span><span class="entry-price">15р</span></div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- =================== MENU =================== -->
   <div class="section" id="section-menu">
     <div class="section-heading">🍸 Меню</div>
-
     <div class="menu-cats">
-      <button class="cat-btn active" onclick="showMenuCat('hookah', this)">🌿 Кальяны</button>
-      <button class="cat-btn" onclick="showMenuCat('cocktails', this)">🍸 Коктейли</button>
-      <button class="cat-btn" onclick="showMenuCat('shots', this)">🥃 Шоты</button>
+      <button class="cat-btn active" onclick="showMenuCat('cocktails', this)">🍸 Коктейли</button>
+      <button class="cat-btn" onclick="showMenuCat('shots', this)">🥃 Лунные Шоты</button>
       <button class="cat-btn" onclick="showMenuCat('crazy', this)">🌀 Crazy Menu</button>
-      <button class="cat-btn" onclick="showMenuCat('spirits', this)">🍾 Крепкое</button>
-      <button class="cat-btn" onclick="showMenuCat('wine', this)">🍷 Вино/Пиво</button>
+      <button class="cat-btn" onclick="showMenuCat('alcohol', this)">🍾 Алкоголь</button>
+      <button class="cat-btn" onclick="showMenuCat('wine-beer', this)">🍷 Вино/Пиво</button>
       <button class="cat-btn" onclick="showMenuCat('food', this)">🍽 Кухня</button>
       <button class="cat-btn" onclick="showMenuCat('nonalco', this)">🧃 Безалк.</button>
-    </div>
-
-    <!-- КАЛЬЯНЫ -->
-    <div class="menu-group active" id="mg-hookah">
-      <div class="menu-section-title purple">🌿 Кальяны</div>
-      <div class="hookah-card">
-        <div>
-          <div class="hookah-name">Супер</div>
-          <div class="hookah-sub">Стандартный набор вкусов</div>
-        </div>
-        <div class="hookah-price">35р</div>
-      </div>
-      <div class="hookah-card">
-        <div>
-          <div class="hookah-name">Премиум</div>
-          <div class="hookah-sub">Премиальные табаки</div>
-        </div>
-        <div class="hookah-price">45р</div>
-      </div>
-      <div class="hookah-card">
-        <div>
-          <div class="hookah-name">Авторский</div>
-          <div class="hookah-sub">Уникальные миксы мастера</div>
-        </div>
-        <div class="hookah-price">от 55р</div>
-      </div>
-      <div class="info-card" style="margin-top: 12px;">
-        <div style="font-size: 12px; color: var(--text3); line-height: 1.7;">
-          🚭 По правилам заведения разрешено <strong style="color: var(--text)">только курение кальянов</strong>.<br>
-          Сигареты и электронные устройства — запрещены (законодательство РБ).
-        </div>
-      </div>
+      <button class="cat-btn" onclick="showMenuCat('hookah', this)">🌿 Кальяны</button>
     </div>
 
     <!-- КОКТЕЙЛИ -->
-    <div class="menu-group" id="mg-cocktails">
-      <div class="menu-section-title purple">⭐ Авторские коктейли — 15р</div>
+    <div class="menu-group active" id="mg-cocktails">
+      <div class="menu-section-title purple">Авторские коктейли</div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Астероид</div><div class="menu-item-desc">вермут rosso, тоник, кордиал</div></div><div class="menu-item-price">15р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Гравитация</div><div class="menu-item-desc">водка, абсент, кордиал</div></div><div class="menu-item-price">15р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Звёздный путь</div><div class="menu-item-desc">тёмный ром, кордиал</div></div><div class="menu-item-price">15р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Звёздный путь</div><div class="menu-item-desc">темный ром, кордиал</div></div><div class="menu-item-price">15р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Космос</div><div class="menu-item-desc">игристое, кордиал</div></div><div class="menu-item-price">15р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Луна</div><div class="menu-item-desc">джин, сливки, кордиал</div></div><div class="menu-item-price">15р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Млечный путь</div><div class="menu-item-desc">водка, игристое, кордиал</div></div><div class="menu-item-price">15р</div></div>
@@ -857,13 +794,13 @@
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Эклиптика</div><div class="menu-item-desc">игристое, кордиал</div></div><div class="menu-item-price">15р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Юпитер</div><div class="menu-item-desc">ром, вермут rosso, кордиал</div></div><div class="menu-item-price">15р</div></div>
 
-      <div class="menu-section-title cyan">🍹 Коктейли</div>
+      <div class="menu-section-title cyan">Классические Коктейли</div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Апероль шприц</div></div><div class="menu-item-price">20р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Белый русский</div></div><div class="menu-item-price">17р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Виски-Кола</div></div><div class="menu-item-price">14р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Виски саузр</div></div><div class="menu-item-price">16р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Виски-кола</div></div><div class="menu-item-price">14р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Виски сауэр</div></div><div class="menu-item-price">16р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Водка-Энергетик</div></div><div class="menu-item-price">14р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Голубая Лагуна</div></div><div class="menu-item-price">15р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Голубая лагуна</div></div><div class="menu-item-price">15р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Голубые Гавайи</div></div><div class="menu-item-price">17р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Джин-тоник</div></div><div class="menu-item-price">15р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Куба Либре</div></div><div class="menu-item-price">15р</div></div>
@@ -875,61 +812,32 @@
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Порнстар</div></div><div class="menu-item-price">22р</div></div>
     </div>
 
-    <!-- ШОТЫ -->
+    <!-- ЛУННЫЕ ШОТЫ -->
     <div class="menu-group" id="mg-shots">
-      <div class="menu-section-title gold">🌙 Лунные шоты (10 шт / 400 мл)</div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Apple Moon</div><div class="menu-item-desc">Яблочная Луна</div></div><div class="menu-item-price">45р</div></div>
+      <div class="menu-section-title pink">Полметра шотов (10 шотов / 400 мл)</div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Apple Moon</div><div class="menu-item-desc">Яблочная луна</div></div><div class="menu-item-price">45р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Bubble Gum Moon</div><div class="menu-item-desc">Лунная жвачка</div></div><div class="menu-item-price">50р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Blue Moon</div><div class="menu-item-desc">Голубая Луна</div></div><div class="menu-item-price">40р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Mexican Moon</div><div class="menu-item-desc">Мексиканская Луна</div></div><div class="menu-item-price">65р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Watermelon Moon</div><div class="menu-item-desc">Лунный Арбуз</div></div><div class="menu-item-price">45р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Moon Popcorn</div><div class="menu-item-desc">Лунный Попкорн</div></div><div class="menu-item-price">40р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Strawberry Moon</div><div class="menu-item-desc">Клубничная Луна</div></div><div class="menu-item-price">50р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Dark Moon</div><div class="menu-item-desc">Тёмная Луна</div></div><div class="menu-item-price">45р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Blue Moon</div><div class="menu-item-desc">Голубая луна</div></div><div class="menu-item-price">40р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Mexican Moon</div><div class="menu-item-desc">Мексиканская луна</div></div><div class="menu-item-price">65р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Watermelon Moon</div><div class="menu-item-desc">Лунный арбуз</div></div><div class="menu-item-price">45р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Moon Popcorn</div><div class="menu-item-desc">Лунный попкорн</div></div><div class="menu-item-price">40р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Strawberry Moon</div><div class="menu-item-desc">Клубничная луна</div></div><div class="menu-item-price">50р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Dark Moon</div><div class="menu-item-desc">Темная луна</div></div><div class="menu-item-price">45р</div></div>
     </div>
 
     <!-- CRAZY MENU -->
     <div class="menu-group" id="mg-crazy">
-      <div class="menu-section-title pink">🌀 Crazy Menu</div>
-      <div class="hookah-card" style="flex-direction: column; align-items: flex-start;">
-        <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:6px;">
-          <div class="hookah-name">Договор веры</div>
-          <div class="hookah-price">15р</div>
-        </div>
-        <div class="hookah-sub">сбалансированная комбинация, которую бармен никогда не повторяет дважды</div>
-      </div>
-      <div class="hookah-card" style="flex-direction: column; align-items: flex-start;">
-        <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:6px;">
-          <div class="hookah-name">Текила Бум</div>
-          <div class="hookah-price">20р</div>
-        </div>
-        <div class="hookah-sub">интерактивная подача</div>
-      </div>
-      <div class="hookah-card" style="flex-direction: column; align-items: flex-start;">
-        <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:6px;">
-          <div class="hookah-name">Ревнивая жена</div>
-          <div class="hookah-price">20р</div>
-        </div>
-        <div class="hookah-sub">интерактивная подача</div>
-      </div>
-      <div class="hookah-card" style="flex-direction: column; align-items: flex-start;">
-        <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:6px;">
-          <div class="hookah-name">Потеряли пацана</div>
-          <div class="hookah-price">25р</div>
-        </div>
-      </div>
-      <div class="hookah-card" style="flex-direction: column; align-items: flex-start; border-color: rgba(251,191,36,0.4); background: linear-gradient(135deg, rgba(251,191,36,0.1), rgba(176,110,243,0.05));">
-        <div style="display:flex; justify-content:space-between; width:100%; margin-bottom:6px;">
-          <div class="hookah-name" style="color: var(--gold)">⭐ Парад планет</div>
-          <div class="hookah-price" style="color: var(--gold)">95р</div>
-        </div>
-        <div class="hookah-sub">легендарный коктейль — только для смелых</div>
-      </div>
+      <div class="menu-section-title red" style="color: var(--pink)">Crazy Menu</div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Договор веры</div><div class="menu-item-desc">сбалансированная комбинация, которую бармен никогда не повторяет дважды</div></div><div class="menu-item-price">15р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Текила Бум</div><div class="menu-item-desc">интерактивная подача</div></div><div class="menu-item-price">20р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Ревнивая жена</div><div class="menu-item-desc">интерактивная подача</div></div><div class="menu-item-price">20р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Потеряли пацана</div></div><div class="menu-item-price">25р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Парад планет</div></div><div class="menu-item-price">95р</div></div>
     </div>
 
-    <!-- КРЕПКОЕ -->
-    <div class="menu-group" id="mg-spirits">
-      <div class="menu-section-title purple">🥃 Виски (40мл)</div>
+    <!-- КРЕПКИЙ АЛКОГОЛЬ -->
+    <div class="menu-group" id="mg-alcohol">
+      <div class="menu-section-title gold">Виски (40 мл)</div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Black Velvet caramel</div><div class="menu-item-desc">Канада</div></div><div class="menu-item-price">12р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Jim Beam</div><div class="menu-item-desc">США</div></div><div class="menu-item-price">12р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Jim Beam вкусовой</div><div class="menu-item-desc">США</div></div><div class="menu-item-price">14р</div></div>
@@ -940,30 +848,30 @@
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Jack Daniel's</div><div class="menu-item-desc">США</div></div><div class="menu-item-price">15р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Monkey Shoulder</div><div class="menu-item-desc">Шотландия односолодовый</div></div><div class="menu-item-price">20р</div></div>
 
-      <div class="menu-section-title cyan">⚓ Ром (40мл)</div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Captain Morgan White</div></div><div class="menu-item-price">12р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Captain Morgan Dark</div></div><div class="menu-item-price">12р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Captain Morgan Spiced</div></div><div class="menu-item-price">13р</div></div>
+      <div class="menu-section-title purple">Ром (40 мл)</div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Captain Morgan white</div><div class="menu-item-desc">Великобритания</div></div><div class="menu-item-price">12р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Captain Morgan Dark</div><div class="menu-item-desc">Великобритания</div></div><div class="menu-item-price">12р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Captain Morgan Spiced</div><div class="menu-item-desc">Великобритания</div></div><div class="menu-item-price">13р</div></div>
 
-      <div class="menu-section-title pink">🫧 Джин (40мл)</div>
+      <div class="menu-section-title cyan">Джин (40 мл)</div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Gordon's London Dry</div><div class="menu-item-desc">Великобритания</div></div><div class="menu-item-price">11р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Gordon's Premium Pink</div><div class="menu-item-desc">Великобритания</div></div><div class="menu-item-price">12р</div></div>
 
-      <div class="menu-section-title gold">🍶 Коньяк (40мл)</div>
+      <div class="menu-section-title gold">Коньяк (40 мл)</div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Армянский 6*</div><div class="menu-item-desc">Армения</div></div><div class="menu-item-price">11р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Арджеван 25*</div><div class="menu-item-desc">Армения</div></div><div class="menu-item-price">27р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Courvoisier VS</div><div class="menu-item-desc">Франция</div></div><div class="menu-item-price">27р</div></div>
 
-      <div class="menu-section-title purple">🌵 Текила (40мл)</div>
+      <div class="menu-section-title pink">Текила (40 мл)</div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Sierra Blanco</div><div class="menu-item-desc">Мексика</div></div><div class="menu-item-price">13р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Sierra Reposado</div><div class="menu-item-desc">Мексика</div></div><div class="menu-item-price">13р</div></div>
 
-      <div class="menu-section-title cyan">💧 Водка & Абсент (40мл/0.5л)</div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Бульбаш</div><div class="menu-item-desc">РБ</div></div><div class="menu-item-price">5/50р</div></div>
+      <div class="menu-section-title green">Водка & Абсент (40 мл / 0.5 л)</div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Бульбаш</div><div class="menu-item-desc">РБ</div></div><div class="menu-item-price">5р / 50р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Danzka</div><div class="menu-item-desc">Дания</div></div><div class="menu-item-price">11р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Absinth</div><div class="menu-item-desc">Чехия</div></div><div class="menu-item-price">15р</div></div>
 
-      <div class="menu-section-title pink">🍋 Ликёр & Вермут (40мл)</div>
+      <div class="menu-section-title cyan">Ликер & Вермут (40 мл)</div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Aperol</div><div class="menu-item-desc">Италия</div></div><div class="menu-item-price">11р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Martini Bianco</div><div class="menu-item-desc">Италия</div></div><div class="menu-item-price">7р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Martini Fiero</div><div class="menu-item-desc">Италия</div></div><div class="menu-item-price">8р</div></div>
@@ -971,225 +879,221 @@
     </div>
 
     <!-- ВИНО / ПИВО -->
-    <div class="menu-group" id="mg-wine">
-      <div class="menu-section-title gold">🥂 Игристое</div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Baron d'Arignac</div><div class="menu-item-desc">РБ · 125мл / 750мл · сух/п.сл</div></div><div class="menu-item-price">10/50р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Prosecco</div><div class="menu-item-desc">Италия · brut · 750мл</div></div><div class="menu-item-price">80р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Moet & Chandon</div><div class="menu-item-desc">Франция · brut · 750мл</div></div><div class="menu-item-price">390р</div></div>
+    <div class="menu-group" id="mg-wine-beer">
+      <div class="menu-section-title purple">Игристое (125 мл / 750 мл)</div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Baron d'Arignac</div><div class="menu-item-desc">РБ, сух п/сух п/сл</div></div><div class="menu-item-price">10р / 50р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Prosecco</div><div class="menu-item-desc">Италия, brut, 750мл</div></div><div class="menu-item-price">80р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Moet & Chandon</div><div class="menu-item-desc">Франция, brut, 750мл</div></div><div class="menu-item-price">390р</div></div>
 
-      <div class="menu-section-title purple">🍷 Вино белое (750мл)</div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Corte Mascaldo</div><div class="menu-item-desc">Италия · сухое</div></div><div class="menu-item-price">55р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Monfiorito</div><div class="menu-item-desc">Италия · п/сух п/сл</div></div><div class="menu-item-price">55р</div></div>
+      <div class="menu-section-title cyan">Вино Белое (750 мл)</div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Corte Mascaldo</div><div class="menu-item-desc">Италия, сухое</div></div><div class="menu-item-price">55р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Monfiorito</div><div class="menu-item-desc">Италия, п/сух п/сл</div></div><div class="menu-item-price">55р</div></div>
 
-      <div class="menu-section-title pink">🍷 Вино красное (750мл)</div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Corte Mascaldo</div><div class="menu-item-desc">Италия · сухое</div></div><div class="menu-item-price">55р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Monfiorito</div><div class="menu-item-desc">Италия · п/сух п/сл</div></div><div class="menu-item-price">55р</div></div>
+      <div class="menu-section-title pink">Вино Красное (750 мл)</div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Corte Mascaldo</div><div class="menu-item-desc">Италия, сухое</div></div><div class="menu-item-price">55р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Monfiorito</div><div class="menu-item-desc">Италия, п/сух п/сл</div></div><div class="menu-item-price">55р</div></div>
 
-      <div class="menu-section-title cyan">🍺 Пиво (разл. 0.5)</div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Premium</div></div><div class="menu-item-price">8р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Пшеничное</div></div><div class="menu-item-price">9р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Аксамітнае</div></div><div class="menu-item-price">8р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Вечер в Брюгге</div><div class="menu-item-desc">бут. 0.5</div></div><div class="menu-item-price">8р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Коронет</div><div class="menu-item-desc">бут. 0.56</div></div><div class="menu-item-price">8р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Портер</div><div class="menu-item-desc">бут. 0.5</div></div><div class="menu-item-price">8р</div></div>
+      <div class="menu-section-title gold">Пиво</div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Premium</div><div class="menu-item-desc">разл. 0.5л</div></div><div class="menu-item-price">8р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Пшеничное</div><div class="menu-item-desc">разл. 0.5л</div></div><div class="menu-item-price">9р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Аксамітнае</div><div class="menu-item-desc">разл. 0.5л</div></div><div class="menu-item-price">8р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Вечер в Брюгге</div><div class="menu-item-desc">бут. 0.5л</div></div><div class="menu-item-price">8р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Коронет</div><div class="menu-item-desc">бут. 0.56л</div></div><div class="menu-item-price">8р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Портер</div><div class="menu-item-desc">бут. 0.5л</div></div><div class="menu-item-price">8р</div></div>
     </div>
 
     <!-- КУХНЯ -->
     <div class="menu-group" id="mg-food">
-      <div class="menu-section-title green">🥗 Стартеры</div>
+      <div class="menu-section-title purple">Стартеры</div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Греческий с оливками и вялеными томатами</div><div class="menu-item-desc">250г</div></div><div class="menu-item-price">18р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Цезарь с цыплёнком</div><div class="menu-item-desc">240г</div></div><div class="menu-item-price">22р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Цезарь с креветкой</div><div class="menu-item-desc">240г</div></div><div class="menu-item-price">26р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Тартар из тунца</div><div class="menu-item-desc">210г</div></div><div class="menu-item-price">25р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Тартар из говядины</div><div class="menu-item-desc">210г</div></div><div class="menu-item-price">25р</div></div>
 
-      <div class="menu-section-title cyan">🧀 Холодные закуски</div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Мясная доска</div><div class="menu-item-desc">250г · прошутто, пепперони, салями, рулетики из ветчины, бекон</div></div><div class="menu-item-price">30р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Овощная доска</div><div class="menu-item-desc">350г · томат, огурец, перец, салат</div></div><div class="menu-item-price">18р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Сырная доска</div><div class="menu-item-desc">240г · 4 вида сыра, орехи, финики, виноград, мёд</div></div><div class="menu-item-price">30р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Фруктовая доска</div><div class="menu-item-desc">380г · сезонные и тропические фрукты</div></div><div class="menu-item-price">20р</div></div>
+      <div class="menu-section-title cyan">Холодные закуски</div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Мясная доска</div><div class="menu-item-desc">прошутто, пепперони, салями, рулетики из ветчины, бекон (250г)</div></div><div class="menu-item-price">30р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Овощная доска</div><div class="menu-item-desc">томат, огурец, перец, салат (350г)</div></div><div class="menu-item-price">18р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Сырная доска</div><div class="menu-item-desc">4 вида сыра, орехи, финики, виноград, мёд (240г)</div></div><div class="menu-item-price">30р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Фруктовая доска</div><div class="menu-item-desc">сезонные и тропические фрукты (380г)</div></div><div class="menu-item-price">20р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Канапе на шпажке</div><div class="menu-item-desc">230г</div></div><div class="menu-item-price">24р</div></div>
 
-      <div class="menu-section-title pink">🔥 Горячие закуски</div>
+      <div class="menu-section-title pink">Горячие закуски</div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Гренки с сыром</div><div class="menu-item-desc">280г</div></div><div class="menu-item-price">11р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Картофель фри</div><div class="menu-item-desc">150г</div></div><div class="menu-item-price">9р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Картофельные дольки</div><div class="menu-item-desc">200г</div></div><div class="menu-item-price">9р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Крокеты картофельные</div><div class="menu-item-desc">170г</div></div><div class="menu-item-price">9р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Креветки темпура</div><div class="menu-item-desc">8 шт</div></div><div class="menu-item-price">25р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Крискат</div><div class="menu-item-desc">150г</div></div><div class="menu-item-price">9р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Крылышки BBQ</div><div class="menu-item-desc">300г</div></div><div class="menu-item-price">17р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Крылышки Терияки</div><div class="menu-item-desc">300г</div></div><div class="menu-item-price">17р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Крылышки по-Тайски</div><div class="menu-item-desc">320г</div></div><div class="menu-item-price">18р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Креветки темпура</div><div class="menu-item-desc">8 шт</div></div><div class="menu-item-price">25р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Луковые кольца</div><div class="menu-item-desc">120г</div></div><div class="menu-item-price">12р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Сырные палочки</div><div class="menu-item-desc">150г</div></div><div class="menu-item-price">15р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Стрипсы</div><div class="menu-item-desc">150г</div></div><div class="menu-item-price">15р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Сет для компании</div><div class="menu-item-desc">600г · колбаски-гриль, крылышки, луковые кольца, крокеты, крискат, сухарики, начос</div></div><div class="menu-item-price">45р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Сет для большой компании</div><div class="menu-item-desc">1200г · колбаски-гриль, крылышки, луковые кольца, крокеты, крискат, сухарики, начос</div></div><div class="menu-item-price">90р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Сет для компании</div><div class="menu-item-desc">колбаски-гриль, крылышки, луковые кольца, крокеты, крискат, сухарики, начос (600г)</div></div><div class="menu-item-price">45р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Сет для большой компании</div><div class="menu-item-desc">колбаски-гриль, крылышки, луковые кольца, крокеты, крискат, сухарики, начос (1200г)</div></div><div class="menu-item-price">90р</div></div>
 
-      <div class="menu-section-title gold">🍔 Горячие блюда</div>
+      <div class="menu-section-title gold">Сэндвич-Клаб</div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Сэндвич-клаб с вялеными томатами</div><div class="menu-item-desc">120г</div></div><div class="menu-item-price">14р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Сэндвич-клаб Цезарь с цыпленком</div><div class="menu-item-desc">130г</div></div><div class="menu-item-price">14р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Сэндвич-клаб с лососем</div><div class="menu-item-desc">130г</div></div><div class="menu-item-price">18р</div></div>
+
+      <div class="menu-section-title green">Сытно & Вкусно</div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Бургер фирменный с говяжьей котлетой</div><div class="menu-item-desc">250г</div></div><div class="menu-item-price">18р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Бургер фирменный с куриной котлетой</div><div class="menu-item-desc">250г</div></div><div class="menu-item-price">18р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name"> Кесадилья с говядиной</div><div class="menu-item-desc">350г</div></div><div class="menu-item-price">18р</div></div>
+
+      <div class="menu-section-title purple">Горячие блюда</div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Ребрышки свиные BBQ</div><div class="menu-item-desc">250г</div></div><div class="menu-item-price">25р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Кордон-Блю</div><div class="menu-item-desc">200г</div></div><div class="menu-item-price">25р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Стейк из тунца в сливочно-чесночном соусе</div><div class="menu-item-desc">200г</div></div><div class="menu-item-price">25р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Бургер с говяжьей котлетой</div><div class="menu-item-desc">250г</div></div><div class="menu-item-price">18р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Бургер с куриной котлетой</div><div class="menu-item-desc">250г</div></div><div class="menu-item-price">18р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Кесадилья с говядиной</div><div class="menu-item-desc">350г</div></div><div class="menu-item-price">18р</div></div>
 
-      <div class="menu-section-title purple">🍰 Десерты</div>
+      <div class="menu-section-title cyan">Гарниры & Соусы</div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Картофель фри</div><div class="menu-item-desc">150г</div></div><div class="menu-item-price">9р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Картофельные дольки</div><div class="menu-item-desc">200г</div></div><div class="menu-item-price">9р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Крискат</div><div class="menu-item-desc">150г</div></div><div class="menu-item-price">9р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Овощи гриль</div><div class="menu-item-desc">250г</div></div><div class="menu-item-price">15р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Добавь соус</div><div class="menu-item-desc">барбекю, сырный, чесночный</div></div><div class="menu-item-price">3р</div></div>
+
+      <div class="menu-section-title pink">Десерты</div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Чизкейк Сан Себастьян</div><div class="menu-item-desc">130г</div></div><div class="menu-item-price">12р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Мороженое Луна</div><div class="menu-item-desc">210г · пломбир, фрукты, орехи, шоколадный соус</div></div><div class="menu-item-price">12р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Мороженое Луна</div><div class="menu-item-desc">пломбир, фрукты, орехи, шоколадный соус (210г)</div></div><div class="menu-item-price">12р</div></div>
     </div>
 
-    <!-- БЕЗАЛКОГОЛЬНЫЕ -->
+    <!-- БЕЗАЛКОГОЛЬНЫЕ НАПИТКИ -->
     <div class="menu-group" id="mg-nonalco">
-      <div class="menu-section-title cyan">🧃 Безалкогольные</div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Лонг дринк</div><div class="menu-item-desc">апельсин-ваниль / пало санто-банан / вишня-шисо / малина-пан / жасмин-бузина / манго-маркуйя / фуджи-сакура</div></div><div class="menu-item-price">9р</div></div>
+      <div class="menu-section-title cyan">Безалкогольные напитки</div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Лонг Дринк</div><div class="menu-item-desc">апельсин-ваниль / пало санто-банан / вишня-шисо / малина-пан / жасмин-бузина / манго-маркуйя / фуджи-сакура</div></div><div class="menu-item-price">9р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Aura 0.5</div></div><div class="menu-item-price">4р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Pepsi. Mirinda. 7up 0.5</div></div><div class="menu-item-price">5р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Сок R.I.C.H</div><div class="menu-item-desc">0.25 / 1л</div></div><div class="menu-item-price">5/15р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Pepsi, Mirinda, 7up 0.5</div></div><div class="menu-item-price">5р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Сок R.I.C.H</div><div class="menu-item-desc">0.25л / 1л</div></div><div class="menu-item-price">5р / 15р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Burn 0.25</div></div><div class="menu-item-price">9р</div></div>
-      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Чай 0.5л</div><div class="menu-item-desc">зелёный/черный/ягодный</div></div><div class="menu-item-price">7/11р</div></div>
+      <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Чай 0.5л</div><div class="menu-item-desc">зеленый / черный / ягодный</div></div><div class="menu-item-price">7р / 11р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Американо, Эспрессо</div></div><div class="menu-item-price">5р</div></div>
       <div class="menu-item"><div class="menu-item-left"><div class="menu-item-name">Капучино, Латте</div></div><div class="menu-item-price">6р</div></div>
+    </div>
+
+    <!-- КАЛЬЯНЫ -->
+    <div class="menu-group" id="mg-hookah">
+      <div class="menu-section-title purple">Кальяны</div>
+      <div class="hookah-card"><div><div class="hookah-name">Супер</div><div class="hookah-sub">Стандартный набо вкусов</div></div><div class="hookah-price">35р</div></div>
+      <div class="hookah-card"><div><div class="hookah-name">Премиум</div><div class="hookah-sub">Премиальные табаки</div></div><div class="hookah-price">45р</div></div>
+      <div class="hookah-card"><div><div class="hookah-name">Авторские</div><div class="hookah-sub">Эксклюзивные миксы мастера</div></div><div class="hookah-price">от 55р</div></div>
     </div>
   </div>
 
   <!-- =================== BOOKING =================== -->
   <div class="section" id="section-booking">
-    <div class="section-heading">📅 Бронирование</div>
+    <div class="section-heading">📅 Забронировать</div>
 
-    <div class="booking-type-grid">
-      <div class="book-type-card selected" id="bt-table" onclick="selectBookType('table')">
-        <div class="bt-icon">🪑</div>
-        <div class="bt-title">Столик</div>
-        <div class="bt-min">минимальный заказ</div>
-        <div class="bt-price">30р / гость</div>
-      </div>
-      <div class="book-type-card" id="bt-vip" onclick="selectBookType('vip')">
-        <div class="bt-icon">👑</div>
-        <div class="bt-title">VIP комната</div>
-        <div class="bt-min">минимальный заказ</div>
-        <div class="bt-price">50р / гость</div>
+    <div class="booking-cutoff-banner">
+      <div class="cutoff-icon">🌙⏰</div>
+      <div class="cutoff-text">
+        <div class="cutoff-title">Бронь принимается только до 01:00</div>
+        <div class="cutoff-sub">После 01:00 столики занимаются в живой очереди — без брони</div>
       </div>
     </div>
 
-    <div id="booking-form">
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Дата</label>
-          <input type="date" class="form-input" id="book-date">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Время</label>
-          <input type="time" class="form-input" id="book-time" value="20:00">
-        </div>
+    <div class="booking-type-grid">
+      <div class="book-type-card selected" id="btc-table" onclick="selectBookType('table')">
+        <div class="bt-icon">🪑</div>
+        <div class="bt-title">Столик</div>
+        <div class="bt-min">депозит/чел</div>
+        <div class="bt-price">30 BYN</div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Количество гостей</label>
-        <input type="number" class="form-input" id="book-guests" placeholder="Например: 4" min="1" max="50">
+      <div class="book-type-card" id="btc-vip" onclick="selectBookType('vip')">
+        <div class="bt-icon">👑</div>
+        <div class="bt-title">VIP комната</div>
+        <div class="bt-min">депозит/чел</div>
+        <div class="bt-price">50 BYN</div>
       </div>
+    </div>
+
+    <div id="booking-form-block">
       <div class="form-group">
-        <label class="form-label">Имя</label>
-        <input type="text" class="form-input" id="book-name" placeholder="На чьё имя бронировать?">
+        <label class="form-label">Ваше имя</label>
+        <input type="text" class="form-input" id="b-name" placeholder="Иван">
       </div>
       <div class="form-group">
         <label class="form-label">Телефон</label>
-        <input type="tel" class="form-input" id="book-phone" placeholder="+375 (XX) XXX-XX-XX">
+        <input type="tel" class="form-input" id="b-phone" placeholder="+375 (XX) XXX-XX-XX">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Гостей</label>
+          <input type="number" class="form-input" id="b-guests" value="2" min="1">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Дата</label>
+          <input type="date" class="form-input" id="b-date">
+        </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Пожелания (необязательно)</label>
-        <input type="text" class="form-input" id="book-notes" placeholder="День рождения, особые пожелания...">
+        <label class="form-label">Время прихода <span class="required-mark">*</span></label>
+        <input type="time" class="form-input" id="b-time" max="01:00">
+        <div class="time-hint">⚠️ Бронь возможна только на время до 01:00</div>
       </div>
-      <button class="submit-btn" onclick="submitBooking()">🌙 Отправить заявку</button>
+      <div class="form-group">
+        <label class="form-label">Комментарий</label>
+        <input type="text" class="form-input" id="b-comment" placeholder="Пожелания...">
+      </div>
+      <button class="submit-btn" onclick="submitBooking()">Отправить заявку 🚀</button>
     </div>
 
-    <div class="booking-result" id="booking-result">
-      <div class="br-icon">🌖</div>
-      <div class="br-title">Заявка отправлена!</div>
-      <div class="br-text" id="booking-result-text"></div>
-    </div>
-
-    <div style="margin-top: 16px; padding: 14px; background: var(--card); border-radius: var(--radius); border: 1px solid var(--border);">
-      <div style="font-size: 12px; color: var(--text3); line-height: 1.7;">
-        ⚠️ Если вы не заняли столик в течение <strong style="color: var(--text)">20 минут</strong> после оговоренного времени — администрация вправе передать резерв другому посетителю.
-      </div>
+    <div class="booking-result" id="booking-success-block">
+      <div class="br-icon">✨</div>
+      <div class="br-title">Заявка принята!</div>
+      <div class="br-text">Наш менеджер свяжется с вами в ближайшее время для подтверждения бронирования. Ждем вас на Луне! 🌙</div>
     </div>
   </div>
 
-  <!-- =================== SCRIPTS =================== -->
+  <!-- =================== SCRIPTS / QUESTIONS =================== -->
   <div class="section" id="section-scripts">
-    <div class="section-heading">💬 Скрипты ответов</div>
-    <div style="font-size: 12px; color: var(--text3); margin-bottom: 16px;">Нажми на вопрос — скопируй готовый ответ</div>
+    <div class="section-heading">💬 <span id="scripts-heading-label">Скрипты ответов</span></div>
+
+    <div class="info-card">
+      <div class="info-card-header" onclick="toggleCard(this)">
+        <span class="ic-icon">✨</span>
+        <span class="ic-title">Приветствие гостя</span>
+        <span class="ic-arrow">▾</span>
+      </div>
+      <div class="info-card-body">
+        <div class="script-box">
+          <div class="script-answer" id="sc-hello">Добрый вечер.🌒 С радостью помогу вам забронировать столик. На какую дату вы планируете визит? Напоминаю наш график: Чт-Вс с 19:00 до 01:00, Пт-Сб с 19:00 до 06:00.</div>
+          <button class="copy-btn admin-action-btn" onclick="copyScriptText('sc-hello', 'Приветствие гостя')">Скопировать скрипт</button>
+        </div>
+      </div>
+    </div>
 
     <div class="info-card">
       <div class="info-card-header" onclick="toggleCard(this)">
         <span class="ic-icon">🪑</span>
-        <span class="ic-title">Бронь столика</span>
+        <span class="ic-title">Условия обычного стола</span>
         <span class="ic-arrow">▾</span>
       </div>
       <div class="info-card-body">
         <div class="script-box">
-          <div class="script-question">«Здравствуйте, можно столик забронировать?»</div>
-          <div class="script-answer">Добрый вечер, ещё будет свободный столик🌖 Чтобы забронировать столик, напишите нам:<br><br>
-          — На какое число и время вы планируете прийти<br>
-          — Сколько человек будет в вашей компании<br>
-          — Укажите на чьё имя и номер телефона забронировать<br><br>
-          <strong>Бронирование столика предполагает минимальный заказ в 30 рублей с каждого гостя по меню бара и кухни.</strong></div>
+          <div class="script-answer" id="sc-table">Добрый вечер! Чтобы забронировать столик, вам достаточно перейти во вкладку «Бронь» в нижнем меню и заполнить короткую форму. Бронирование столика предполагает собой минимальный заказ (депозит) в размере 30 рублей с каждого гостя по меню бара и кухни. В Чт и Вс вход бесплатный, в Пт и Сб действуют тарифы шоу-программы.</div>
+          <button class="copy-btn admin-action-btn" onclick="copyScriptText('sc-table', 'Условия обычного стола')">Скопировать скрипт</button>
         </div>
-        <button class="submit-btn" style="margin-top: 8px; font-size: 13px; padding: 10px;" onclick="copyScript('table')">📋 Скопировать ответ</button>
       </div>
     </div>
 
     <div class="info-card">
       <div class="info-card-header" onclick="toggleCard(this)">
-        <span class="ic-icon">👑</span>
-        <span class="ic-title">Бронь VIP комнаты</span>
+        <span class="ic-icon">🎟️</span>
+        <span class="ic-title">Стоимость входа и программа</span>
         <span class="ic-arrow">▾</span>
       </div>
       <div class="info-card-body">
         <div class="script-box">
-          <div class="script-question">«Есть ли свободная вип комната и можно узнать стоимость?»</div>
-          <div class="script-answer">Добрый вечер.🌒 Бронирование VIP комнаты предполагает минимальный заказ в <strong>50 рублей с каждого гостя</strong> по меню бара и кухни. Чтобы забронировать VIP комнату, напишите нам:<br><br>
-          — На какое число и время вы планируете прийти<br>
-          — Сколько человек будет в вашей компании<br>
-          — Укажите на чьё имя и номер телефона забронировать</div>
+          <div class="script-answer" id="sc-program">Наш режим работы и условия входа:
+• Четверг и Воскресенье: работаем с 19:00 до 01:00, вход абсолютно БЕСПЛАТНЫЙ всю ночь.
+• Пятница (19:00 - 06:00): До 23:00 вход бесплатный. После 23:00 вход с улицы на программу — 15 рублей. Для тех гостей, кто занял столы до 23:00, плата за программу (начинается в 24:00) составит всего 10 рублей.
+• Суббота (19:00 - 06:00): До 23:00 вход бесплатный. В 23:00 стартует DJ-шоу. Для гостей в зале — 10 рублей, для тех, кто приходит из города после 24:00 — вход 15 рублей.</div>
+          <button class="copy-btn admin-action-btn" onclick="copyScriptText('sc-program', 'Стоимость входа и программа')">Скопировать скрипт</button>
         </div>
-        <button class="submit-btn" style="margin-top: 8px; font-size: 13px; padding: 10px;" onclick="copyScript('vip')">📋 Скопировать ответ</button>
-      </div>
-    </div>
-
-    <div class="info-card">
-      <div class="info-card-header" onclick="toggleCard(this)">
-        <span class="ic-icon">🎵</span>
-        <span class="ic-title">Стоимость входа</span>
-        <span class="ic-arrow">▾</span>
-      </div>
-      <div class="info-card-body">
-        <div class="script-box">
-          <div class="script-question">«Сколько стоит вход?»</div>
-          <div class="script-answer">
-            <strong>В пятницу:</strong><br>
-            До 23:00 — свободно, без доп. платы 🆓<br>
-            С 23:00 (уже внутри) — DJ-программа 10 рублей<br>
-            Вход после 24:00 — DJ-программа 15 рублей<br><br>
-            <strong>В субботу:</strong><br>
-            До 23:00 — свободно, без доп. платы 🆓<br>
-            С 23:00 (уже внутри) — DJ-программа 10 рублей<br>
-            Вход после 23:00 — DJ-программа 15 рублей
-          </div>
-        </div>
-        <button class="submit-btn" style="margin-top: 8px; font-size: 13px; padding: 10px;" onclick="copyScript('entry')">📋 Скопировать ответ</button>
-      </div>
-    </div>
-
-    <div class="info-card">
-      <div class="info-card-header" onclick="toggleCard(this)">
-        <span class="ic-icon">🎂</span>
-        <span class="ic-title">День рождения</span>
-        <span class="ic-arrow">▾</span>
-      </div>
-      <div class="info-card-body">
-        <div class="script-box">
-          <div class="script-question">«Есть ли скидки для именинника?»</div>
-          <div class="script-answer">В честь дня рождения при предварительном заказе от <strong>80 рублей на человека</strong> мы предлагаем скидку <strong>20% на всё меню кухни</strong>, а также поздравление от заведения 🥂</div>
-        </div>
-        <button class="submit-btn" style="margin-top: 8px; font-size: 13px; padding: 10px;" onclick="copyScript('birthday')">📋 Скопировать ответ</button>
       </div>
     </div>
 
@@ -1201,25 +1105,13 @@
       </div>
       <div class="info-card-body">
         <div class="script-box">
-          <div class="script-question">«Можно ли со своим алкоголем?»</div>
-          <div class="script-answer">При предварительном заказе от <strong>100 рублей на человека</strong>, в который также входит символический алкоголь от заведения (из расчёта 1 бутылка на 3 человека), разрешается приносить свой алкоголь без какого-либо пробкового сбора 🍾</div>
-        </div>
-        <button class="submit-btn" style="margin-top: 8px; font-size: 13px; padding: 10px;" onclick="copyScript('alcohol')">📋 Скопировать ответ</button>
-      </div>
-    </div>
+          <div class="script-answer" id="sc-alcohol">Да, у нас действует отличная акция «Свой алкоголь»! Вы можете свободно принести крепкие напитки с собой без пробкового сбора. 
 
-    <div class="info-card">
-      <div class="info-card-header" onclick="toggleCard(this)">
-        <span class="ic-icon">🎤</span>
-        <span class="ic-title">Караоке в VIP</span>
-        <span class="ic-arrow">▾</span>
-      </div>
-      <div class="info-card-body">
-        <div class="script-box">
-          <div class="script-question">«Есть ли караоке в вип комнате?»</div>
-          <div class="script-answer">Отдельной системы для самих песен нет, но можно на YouTube включить любую песню в формате «минусовки» и петь сколько угодно 🎤🌙</div>
+Для этого оформляется предварительный заказ кухни и бара на сумму от 100 рублей на каждого человека. В эту стоимость уже будет автоматически включен символический стартовый алкоголь от нашего заведения, а все остальные напитки вы приносите свои!
+
+Например, если вас будет 6 человек, общая сумма предзаказа составит от 600 рублей. Скажите, пожалуйста, на какое количество гостей вы планируете отдых, чтобы я сориентировал вас по финальным условиям? 😊</div>
+          <button class="copy-btn admin-action-btn" onclick="copyScriptText('sc-alcohol', 'Свой алкоголь')">Скопировать скрипт</button>
         </div>
-        <button class="submit-btn" style="margin-top: 8px; font-size: 13px; padding: 10px;" onclick="copyScript('karaoke')">📋 Скопировать ответ</button>
       </div>
     </div>
   </div>
@@ -1227,491 +1119,468 @@
   <!-- =================== RULES =================== -->
   <div class="section" id="section-rules">
     <div class="section-heading">📋 Правила заведения</div>
-
-    <div class="rule-card">
-      <div class="rule-num">1</div>
-      <div class="rule-text">
-        Запрещено приносить алкоголь и продукты без предварительного согласования с администрацией.<br><br>
-        При выявлении — <strong>пробковый сбор 50р за каждые 0.5л</strong>, а также ограничение доступа в заведение.
-      </div>
-    </div>
-
-    <div class="rule-card">
-      <div class="rule-num">2</div>
-      <div class="rule-text">
-        Администрация вправе отказать в посещении при несоответствии дресс-кода.<br><br>
-        <strong>Мужчины:</strong> брюки, рубашки, пиджаки, клубная одежда, туфли<br>
-        <strong>Девушки:</strong> платья, юбки, блузы, брючные костюмы
-      </div>
-    </div>
-
-    <div class="rule-card">
-      <div class="rule-num">3</div>
-      <div class="rule-text">
-        Бронь столика действует <strong>20 минут</strong> после оговоренного времени. Если стол не занят — администрация вправе передать его другому гостю.
-      </div>
-    </div>
-
-    <div class="rule-card">
-      <div class="rule-num">4</div>
-      <div class="rule-text">
-        В заведении разрешено <strong>курение кальянов</strong>. Курение сигарет и электронных устройств запрещено в соответствии с законодательством РБ 🚭
-      </div>
-    </div>
-
-    <div style="margin-top: 8px; padding: 16px; background: linear-gradient(135deg, rgba(176,110,243,0.08), rgba(34,211,238,0.05)); border: 1px solid var(--border2); border-radius: var(--radius); text-align: center;">
-      <div style="font-size: 22px; margin-bottom: 8px;">🌙</div>
-      <div style="font-size: 13px; color: var(--text2); line-height: 1.6;">Просим соблюдать правила — <span style="color: var(--purple)">вместе создаём атмосферу</span>, в которую хочется возвращаться</div>
-    </div>
+    <div class="rule-card"><div class="rule-num">1</div><div class="rule-text">Вход строго с <strong>18 лет</strong> (при себе иметь оригинал паспорта).</div></div>
+    <div class="rule-card"><div class="rule-num">2</div><div class="rule-text">Запрещено приносить свои напитки и еду (кроме официальных условий предложения «Свой алкоголь» при предзаказе от 100р/чел).</div></div>
+    <div class="rule-card"><div class="rule-num">3</div><div class="rule-text">Курение сигарет и электронок внутри помещений строго запрещено. Разрешены только фирменные дымные кальяны.</div></div>
+    <div class="rule-card"><div class="rule-num">4</div><div class="rule-text">Действует Face Control и Dress Code. Одежда в спортивном стиле не допускается.</div></div>
   </div>
 
-  <!-- =================== ADMIN =================== -->
+  <!-- =================== ADMIN PANEL =================== -->
   <div class="section" id="section-admin">
-    <div class="section-heading">⚡ Помощник администратора</div>
+    <div class="section-heading">⚡ Служебные регламенты</div>
 
-    <!-- Видно только если ID не в списке (на случай прямого открытия url) -->
-    <div id="admin-denied" style="display:none; text-align:center; padding: 30px 16px; background: var(--card); border: 1px solid rgba(244,114,182,0.25); border-radius: var(--radius); margin-bottom: 16px;">
-      <div style="font-size: 32px; margin-bottom: 10px;">🔒</div>
-      <div style="font-size: 14px; color: var(--text2); line-height: 1.6;">Этот раздел доступен только администраторам бара.<br>Ваш Telegram ID: <code id="my-tg-id" style="color: var(--cyan)">—</code></div>
-    </div>
-
-    <div id="admin-content">
-      <!-- Управление администраторами -->
-      <div class="info-card" style="border-color: var(--purple); margin-bottom: 16px;">
-        <div class="info-card-header" style="cursor: default;">
-          <span class="ic-icon">👥</span>
-          <span class="ic-title" style="color: var(--purple)">Управление администраторами</span>
-        </div>
-        <div style="padding-top: 10px;">
-          <div class="form-group">
-            <label class="form-label">Telegram ID нового админа</label>
-            <div style="display: flex; gap: 8px;">
-              <input type="text" inputmode="numeric" class="form-input" id="admin-id-input" placeholder="Например: 123456789">
-              <button class="submit-btn" style="margin-top:0; width: auto; padding: 0 16px; white-space: nowrap;" onclick="manageAdminAction('add')" id="btn-add-admin">Добавить</button>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Удалить админа по ID</label>
-            <div style="display: flex; gap: 8px;">
-              <input type="text" inputmode="numeric" class="form-input" id="admin-id-remove" placeholder="Например: 123456789">
-              <button class="submit-btn" style="margin-top:0; width: auto; padding: 0 16px; white-space: nowrap; background: linear-gradient(135deg, var(--pink), #db2777); box-shadow: 0 0 20px rgba(244,114,182,0.4);" onclick="manageAdminAction('remove')" id="btn-remove-admin">Удалить</button>
-            </div>
-          </div>
-          <div class="form-group" style="margin-bottom: 0;">
-            <label class="form-label">Текущие админы</label>
-            <div id="current-admins-list" style="font-size: 13px; color: var(--text2); line-height: 1.8; background: var(--bg3); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border);">Загрузка...</div>
+    <!-- Управление администраторами -->
+    <div class="info-card" style="border-color: var(--purple); margin-bottom: 16px;">
+      <div class="info-card-header" style="cursor: default;">
+        <span class="ic-icon">👥</span>
+        <span class="ic-title" style="color: var(--purple)">Управление администраторами</span>
+      </div>
+      <div style="padding-top: 10px;">
+        <div class="form-group">
+          <label class="form-label">Telegram ID нового админа</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" inputmode="numeric" class="form-input" id="admin-id-input" placeholder="Например: 123456789">
+            <button class="submit-btn" style="margin-top:0; width: auto; padding: 0 16px; white-space: nowrap;" onclick="manageAdminAction('add')" id="btn-add-admin">Добавить</button>
           </div>
         </div>
-      </div>
-
-      <div style="font-size: 13px; color: var(--text3); margin-bottom: 16px; line-height: 1.6;">Типичные ситуации и как их решать быстро</div>
-
-    <div class="problem-card">
-      <div class="problem-header">
-        <span class="problem-icon">😤</span>
-        <span class="problem-title">Гость не хочет платить за DJ</span>
-      </div>
-      <div class="problem-solution">
-        <div class="solution-label">✅ Решение</div>
-        Напомни: вход до 23:00 — бесплатно, после 23:00 — оплачивается DJ-программа (10р если уже внутри, 15р с улицы). Это стандартная практика клубов. Предложи выбор: оплатить или уйти до начала программы.
-      </div>
-    </div>
-
-    <div class="problem-card">
-      <div class="problem-header">
-        <span class="problem-icon">🥃</span>
-        <span class="problem-title">Поймали со своим алкоголем</span>
-      </div>
-      <div class="problem-solution">
-        <div class="solution-label">✅ Решение</div>
-        Пробковый сбор: <strong style="color: var(--pink)">50р за каждые 0.5л</strong>. Изъять алкоголь или предложить оплатить сбор и предварительный заказ от 100р/чел для легального формата.
+        <div class="form-group">
+          <label class="form-label">Удалить админа по ID</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" inputmode="numeric" class="form-input" id="admin-id-remove" placeholder="Например: 123456789">
+            <button class="submit-btn" style="margin-top:0; width: auto; padding: 0 16px; white-space: nowrap; background: linear-gradient(135deg, var(--pink), #db2777); box-shadow: 0 0 20px rgba(244,114,182,0.4);" onclick="manageAdminAction('remove')" id="btn-remove-admin">Удалить</button>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label class="form-label">Текущие админы</label>
+          <div id="current-admins-list" style="font-size: 13px; color: var(--text2); line-height: 1.8; background: var(--bg3); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--border);">Загрузка...</div>
+        </div>
       </div>
     </div>
 
     <div class="problem-card">
-      <div class="problem-header">
-        <span class="problem-icon">👗</span>
-        <span class="problem-title">Конфликт из-за дресс-кода</span>
-      </div>
-      <div class="problem-solution">
-        <div class="solution-label">✅ Решение</div>
-        Вежливо, но твёрдо: «Наш формат — клубное заведение с определённым стилем. Правило действует для всех одинаково». Не спорить, не объяснять долго. Решение менеджера — финальное.
-      </div>
+      <div class="problem-header"><span class="problem-icon">🤬</span><div class="problem-title">Конфликт из-за платного входа</div></div>
+      <div class="problem-solution"><div class="solution-label">Решение:</div>Спокойно объяснить, что после 23:00 работает приглашённый DJ и это стандартная шоу-программа. При сильном негативе позвать старшего смены.</div>
     </div>
-
-    <div class="problem-card">
-      <div class="problem-header">
-        <span class="problem-icon">⏰</span>
-        <span class="problem-title">Опоздали на бронь</span>
-      </div>
-      <div class="problem-solution">
-        <div class="solution-label">✅ Решение</div>
-        После 20 минут ожидания — столик свободен. Если гость пришёл с опозданием и стол уже занят — предложи другой доступный столик или ждать. Не нужно конфликтовать.
-      </div>
-    </div>
-
-    <div class="problem-card">
-      <div class="problem-header">
-        <span class="problem-icon">🎂</span>
-        <span class="problem-title">Просят скидку на ДР без предзаказа</span>
-      </div>
-      <div class="problem-solution">
-        <div class="solution-label">✅ Решение</div>
-        Скидка 20% на кухню — только при <strong style="color: var(--pink)">предварительном заказе от 80р/чел</strong>. Без предзаказа — стандартные условия. Предложи запомнить на следующий раз.
-      </div>
-    </div>
-
-    <div class="problem-card">
-      <div class="problem-header">
-        <span class="problem-icon">🚬</span>
-        <span class="problem-title">Курят сигареты / вейп</span>
-      </div>
-      <div class="problem-solution">
-        <div class="solution-label">✅ Решение</div>
-        Законодательство РБ — не наше правило, а закон. Вежливо попроси выйти на улицу. При повторном нарушении — предупреждение о возможном выходе из заведения.
-      </div>
-    </div>
-
-    <div style="margin-top: 16px;">
-      <div style="font-size: 11px; font-weight: 700; letter-spacing: 2px; color: var(--purple); text-transform: uppercase; margin-bottom: 10px;">Быстрые действия</div>
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-        <button onclick="showSection('scripts')" style="padding: 12px; background: var(--card); border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); font-size: 13px; cursor: pointer;">💬 Скрипты</button>
-        <button onclick="showSection('booking')" style="padding: 12px; background: var(--card); border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); font-size: 13px; cursor: pointer;">📅 Бронь</button>
-        <button onclick="showSection('rules')" style="padding: 12px; background: var(--card); border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); font-size: 13px; cursor: pointer;">📋 Правила</button>
-        <button onclick="showSection('menu')" style="padding: 12px; background: var(--card); border: 1px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); font-size: 13px; cursor: pointer;">🍸 Меню</button>
-      </div>
-    </div>
-    </div><!-- /admin-content -->
   </div>
 
-  <!-- Bottom navigation -->
-  <div class="bottom-nav">
-    <button class="bn-item active" onclick="showSection('home')" id="bn-home">
-      <span class="bn-icon">🌕</span>
-      <span class="bn-label">Главная</span>
-    </button>
-    <button class="bn-item" onclick="showSection('menu')" id="bn-menu">
-      <span class="bn-icon">🍸</span>
-      <span class="bn-label">Меню</span>
-    </button>
-    <button class="bn-item" onclick="showSection('booking')" id="bn-booking">
-      <span class="bn-icon">📅</span>
-      <span class="bn-label">Бронь</span>
-    </button>
-    <button class="bn-item" onclick="showSection('scripts')" id="bn-scripts">
-      <span class="bn-icon">💬</span>
-      <span class="bn-label">Скрипты</span>
-    </button>
-    <button class="bn-item" onclick="showSection('admin')" id="bn-admin" style="display:none;">
-      <span class="bn-icon">⚡</span>
-      <span class="bn-label">Админу</span>
-    </button>
-  </div>
+  <!-- ДИНАМИЧЕСКОЕ НИЖНЕЕ МЕНЮ -->
+  <div class="bottom-nav" id="custom-bottom-menu"></div>
 
 </div>
-
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
-const SECTIONS = ['home','menu','booking','scripts','rules','admin'];
+  // Константы конфигурации
+  const TG_BOT_TOKEN = '8683040747:AAHooN4JQefQ2H3PB1W-htE-3lwhjgwYodc';
+  const GH_TOKEN   = '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';
+  const GH_REPO    = 'Dunyashas/new_tg_bots';
+  const GH_FILE    = 'admins.json';
+  const GH_BRANCH  = 'main';
+  const ADMINS_RAW_URL = `https://raw.githubusercontent.com/${GH_REPO}/${GH_BRANCH}/${GH_FILE}`;
+  const GH_API_URL = `https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`;
 
-function showSection(id) {
-  SECTIONS.forEach(s => {
-    document.getElementById('section-'+s).classList.remove('active');
-    const nav = document.getElementById('nav-'+s);
-    if (nav) nav.classList.remove('active');
-    const bn = document.getElementById('bn-'+s);
-    if (bn) bn.classList.remove('active');
-  });
-  document.getElementById('section-'+id).classList.add('active');
-  const nav = document.getElementById('nav-'+id);
-  if (nav) nav.classList.add('active');
-  const bn = document.getElementById('bn-'+id);
-  if (bn) bn.classList.add('active');
-  window.scrollTo(0,0);
-}
+  // Глобальное состояние приложения
+  let currentSection = 'home';
+  let selectedBookType = 'table';
+  let ADMIN_IDS = [];
+  let isAdmin = false;
+  let currentTgId = null;
+  let adminBusy = false; // защита от двойных кликов при сохранении на GitHub
 
-function toggleCard(header) {
-  const card = header.parentElement;
-  card.classList.toggle('open');
-}
-
-function showMenuCat(cat, btn) {
-  document.querySelectorAll('.menu-group').forEach(g => g.classList.remove('active'));
-  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('mg-'+cat).classList.add('active');
-  btn.classList.add('active');
-}
-
-let bookType = 'table';
-function selectBookType(type) {
-  bookType = type;
-  document.getElementById('bt-table').classList.toggle('selected', type==='table');
-  document.getElementById('bt-vip').classList.toggle('selected', type==='vip');
-}
-
-function submitBooking() {
-  const date = document.getElementById('book-date').value;
-  const time = document.getElementById('book-time').value;
-  const guests = document.getElementById('book-guests').value;
-  const name = document.getElementById('book-name').value;
-  const phone = document.getElementById('book-phone').value;
-  const notes = document.getElementById('book-notes').value;
-
-  if (!date || !guests || !name || !phone) {
-    alert('Пожалуйста, заполните дату, количество гостей, имя и телефон');
-    return;
-  }
-
-  const typeLabel = bookType === 'vip' ? 'VIP комнаты' : 'столика';
-  const minOrder = bookType === 'vip' ? '50р' : '30р';
-  const emoji = bookType === 'vip' ? '👑' : '🌖';
-
-  document.getElementById('booking-form').style.display = 'none';
-  const result = document.getElementById('booking-result');
-  result.classList.add('show');
-  document.getElementById('booking-result-text').innerHTML =
-    `Заявка на бронирование ${typeLabel} принята!<br><br>` +
-    `${emoji} <b>${name}</b><br>` +
-    `📅 ${date} в ${time}<br>` +
-    `👥 ${guests} гостей<br>` +
-    `📞 ${phone}<br>` +
-    (notes ? `💬 ${notes}<br>` : '') +
-    `<br>Минимальный заказ: <b>${minOrder}/гость</b><br><br>` +
-    `Администратор свяжется с вами для подтверждения 🌙`;
-}
-
-const scripts = {
-  table: `Добрый вечер, ещё будет свободный столик🌖 Чтобы забронировать столик, напишите нам:\n- На какое число и время вы планируете прийти\n- Сколько человек будет в вашей компании\n- Укажите на чьё имя и номер телефона забронировать\n\nБронирование столика предполагает собой минимальный заказ в 30 рублей с каждого гостя по меню бара и кухни`,
-  vip: `Добрый вечер.🌒 Бронирование VIP комнаты предполагает собой минимальный заказ в 50 рублей с каждого гостя по меню бара и кухни. Чтобы забронировать VIP комнату, напишите нам:\n- На какое число и время вы планируете прийти\n- Сколько человек будет в вашей компании\n- Укажите на чьё имя и номер телефона забронировать`,
-  entry: `В пятницу:\nДо 23:00 — свободно, без дополнительной платы\nС 23:00 — начинается DJ-программа\n• Для тех, кто уже у нас: 10 рублей\n• Для тех, кто приходит после 24:00: вход 15 рублей\n\nВ субботу:\nДо 23:00 — свободно, без дополнительной платы\nС 23:00 — начинается DJ-программа\n• Для тех, кто уже у нас: 10 рублей\n• Для тех, кто приходит после 23:00: вход 15 рублей`,
-  birthday: `В честь дня рождения при предварительном заказе от 80 рублей на человека мы предлагаем получить скидку 20% на всё меню кухни, а также поздравление от заведения 🥂`,
-  alcohol: `При предварительном заказе от 100 рублей на человека, в который также будет входить символический алкоголь от заведения (из расчёта 1 бутылка на 3 человека), разрешается приносить свой алкоголь без какого-либо пробкового сбора`,
-  karaoke: `Именно отдельной системы нет, но можно на YouTube включить любую песню, которую вы желаете спеть в формате минусовки 🎤`
-};
-
-function copyScript(key) {
-  const text = scripts[key];
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(text).then(() => {
-      showToast('✅ Скопировано!');
-    }).catch(() => fallbackCopy(text));
-  } else {
-    fallbackCopy(text);
-  }
-}
-
-function fallbackCopy(text) {
-  const el = document.createElement('textarea');
-  el.value = text;
-  document.body.appendChild(el);
-  el.select();
-  document.execCommand('copy');
-  document.body.removeChild(el);
-  showToast('✅ Скопировано!');
-}
-
-function showToast(msg) {
-  const t = document.createElement('div');
-  t.textContent = msg;
-  t.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#7c3aed;color:#fff;padding:10px 20px;border-radius:30px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 0 20px rgba(124,58,237,0.5);';
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 2000);
-}
-
-// Set today as min date for booking
-const today = new Date().toISOString().split('T')[0];
-document.getElementById('book-date').min = today;
-document.getElementById('book-date').value = today;
-
-/* =================================================================
-   УПРАВЛЕНИЕ АДМИНАМИ ЧЕРЕЗ GITHUB (admins.json)
-   ================================================================= */
-
-// ⚠️ Вставьте сюда ваши актуальные значения
-const GH_TOKEN   = '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';
-const GH_REPO    = 'Dunyashas/new_tg_bots';
-const GH_FILE    = 'admins.json';
-const GH_BRANCH  = 'main';
-const ADMINS_RAW_URL = `https://raw.githubusercontent.com/${GH_REPO}/${GH_BRANCH}/${GH_FILE}`;
-const GH_API_URL = `https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`;
-
-let ADMIN_IDS = [];
-let currentTgId = null;
-let isAdmin = false;
-let adminBusy = false; // защита от двойных кликов / гонок при сохранении
-
-// Инициализация Telegram WebApp
-(function initTelegram() {
+  // Инициализация Telegram WebApp
   if (window.Telegram && window.Telegram.WebApp) {
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
-    const user = tg.initDataUnsafe && tg.initDataUnsafe.user;
-    if (user && user.id) {
+    window.Telegram.WebApp.ready();
+    window.Telegram.WebApp.expand();
+
+    const user = window.Telegram.WebApp.initDataUnsafe?.user;
+    if (user) {
       currentTgId = String(user.id);
     }
   }
-})();
 
-async function loadAdmins() {
-  const listEl = document.getElementById('current-admins-list');
-  try {
-    const res = await fetch(`${ADMINS_RAW_URL}?v=${Date.now()}`, { cache: 'no-store' });
-    if (!res.ok) throw new Error('Не удалось загрузить список (HTTP ' + res.status + ')');
-    const data = await res.json();
-    if (!Array.isArray(data)) throw new Error('Файл admins.json повреждён (ожидался массив)');
-    ADMIN_IDS = data.map(String);
-    isAdmin = currentTgId !== null && ADMIN_IDS.includes(currentTgId);
-    applyAdminVisibility();
-    renderAdminsList();
-  } catch (e) {
-    console.error('Ошибка загрузки админов:', e);
-    if (listEl) listEl.innerHTML = '<span style="color:var(--pink)">⚠️ Не удалось загрузить список администраторов</span>';
-  }
-}
+  // Загрузка актуального списка админов с GitHub
+  async function loadAdmins() {
+    try {
+      const res = await fetch(`${ADMINS_RAW_URL}?v=${Date.now()}`, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      if (!Array.isArray(data)) throw new Error('admins.json повреждён');
 
-function applyAdminVisibility() {
-  const navAdmin = document.getElementById('nav-admin');
-  const bnAdmin = document.getElementById('bn-admin');
-  const denied = document.getElementById('admin-denied');
-  const content = document.getElementById('admin-content');
-  const myIdEl = document.getElementById('my-tg-id');
+      ADMIN_IDS = data.map(String);
+      isAdmin = currentTgId !== null && ADMIN_IDS.includes(currentTgId);
 
-  if (myIdEl) myIdEl.textContent = currentTgId || '—';
-
-  if (isAdmin) {
-    if (navAdmin) navAdmin.style.display = '';
-    if (bnAdmin) bnAdmin.style.display = '';
-    if (denied) denied.style.display = 'none';
-    if (content) content.style.display = '';
-  } else {
-    if (navAdmin) navAdmin.style.display = 'none';
-    if (bnAdmin) bnAdmin.style.display = 'none';
-    // Если пользователь как-то всё же попал в раздел (например, остался открыт) — закрыть его
-    if (document.getElementById('section-admin').classList.contains('active')) {
-      showSection('home');
+      renderBottomMenu();
+      updateAdminsListUI();
+    } catch (e) {
+      console.error('Ошибка загрузки админов:', e);
+      const listEl = document.getElementById('current-admins-list');
+      if (listEl) listEl.innerHTML = '<span style="color:var(--pink)">⚠️ Не удалось загрузить список администраторов</span>';
     }
   }
-}
 
-function renderAdminsList() {
-  const listEl = document.getElementById('current-admins-list');
-  if (!listEl) return;
-  if (!ADMIN_IDS.length) {
-    listEl.innerHTML = '<span style="color:var(--text3)">Список пуст</span>';
-    return;
-  }
-  listEl.innerHTML = ADMIN_IDS.map(id =>
-    `🔹 <code>${id}</code>${id === currentTgId ? ' <span style="color:var(--cyan)">(вы)</span>' : ''}`
-  ).join('<br>');
-}
+  // Сохранение обновлённого списка админов на GitHub
+  async function saveAdminsToGitHub(newArray) {
+    try {
+      const getRes = await fetch(GH_API_URL, {
+        headers: { 'Authorization': `token ${GH_TOKEN}`, 'Accept': 'application/vnd.github+json' },
+        cache: 'no-store'
+      });
+      if (!getRes.ok) throw new Error('Не удалось получить файл с GitHub (HTTP ' + getRes.status + ')');
+      const fileData = await getRes.json();
 
-function setAdminButtonsBusy(busy) {
-  adminBusy = busy;
-  const addBtn = document.getElementById('btn-add-admin');
-  const removeBtn = document.getElementById('btn-remove-admin');
-  [addBtn, removeBtn].forEach(btn => {
-    if (!btn) return;
-    btn.disabled = busy;
-    btn.style.opacity = busy ? '0.5' : '1';
-  });
-}
+      const jsonStr = JSON.stringify(newArray, null, 2);
+      const base64Content = btoa(unescape(encodeURIComponent(jsonStr)));
 
-async function manageAdminAction(action) {
-  if (adminBusy) return;
-  if (!isAdmin) {
-    showToast('⛔ Недостаточно прав');
-    return;
-  }
+      const putRes = await fetch(GH_API_URL, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${GH_TOKEN}`,
+          'Accept': 'application/vnd.github+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: `Update admins.json via Mini App (${new Date().toISOString()})`,
+          content: base64Content,
+          sha: fileData.sha,
+          branch: GH_BRANCH
+        })
+      });
 
-  const inputEl = document.getElementById(action === 'add' ? 'admin-id-input' : 'admin-id-remove');
-  const id = (inputEl.value || '').trim();
+      if (!putRes.ok) {
+        const errBody = await putRes.json().catch(() => ({}));
+        throw new Error(errBody.message || ('HTTP ' + putRes.status));
+      }
 
-  if (!id || !/^\d+$/.test(id)) {
-    showToast('⚠️ Введите корректный numeric ID');
-    return;
-  }
+      ADMIN_IDS = newArray;
+      isAdmin = currentTgId !== null && ADMIN_IDS.includes(currentTgId);
 
-  let newList = [...ADMIN_IDS];
+      updateAdminsListUI();
+      renderBottomMenu();
+      showToastNotification('✅ Сохранено!');
+      return true;
 
-  if (action === 'add') {
-    if (newList.includes(id)) {
-      showToast('Этот ID уже в списке');
-      return;
+    } catch (e) {
+      console.error('Ошибка сохранения на GitHub:', e);
+      showToastNotification('❌ Ошибка сохранения: ' + e.message);
+      return false;
     }
-    newList.push(id);
-  } else {
-    if (!newList.includes(id)) {
-      showToast('Такого ID нет в списке');
-      return;
-    }
-    if (newList.length === 1) {
-      showToast('⚠️ Нельзя удалить последнего администратора');
-      return;
-    }
-    newList = newList.filter(item => item !== id);
   }
 
-  setAdminButtonsBusy(true);
-  const ok = await saveAdminsToGitHub(newList);
-  setAdminButtonsBusy(false);
-
-  if (ok) {
-    inputEl.value = '';
-    showToast(action === 'add' ? '✅ Админ добавлен' : '✅ Админ удалён');
-  }
-}
-
-async function saveAdminsToGitHub(newArray) {
-  try {
-    // 1. Получаем текущий sha файла (обязателен для обновления через Contents API)
-    const getRes = await fetch(GH_API_URL, {
-      headers: { 'Authorization': `token ${GH_TOKEN}`, 'Accept': 'application/vnd.github+json' },
-      cache: 'no-store'
+  function setAdminButtonsBusy(busy) {
+    adminBusy = busy;
+    const addBtn = document.getElementById('btn-add-admin');
+    const removeBtn = document.getElementById('btn-remove-admin');
+    [addBtn, removeBtn].forEach(btn => {
+      if (!btn) return;
+      btn.disabled = busy;
+      btn.style.opacity = busy ? '0.5' : '1';
     });
-    if (!getRes.ok) throw new Error('Не удалось получить файл с GitHub (HTTP ' + getRes.status + ')');
-    const fileData = await getRes.json();
+  }
 
-    // 2. Кодируем новое содержимое в base64 (с поддержкой кириллицы/юникода)
-    const jsonStr = JSON.stringify(newArray, null, 2);
-    const base64Content = btoa(unescape(encodeURIComponent(jsonStr)));
+  // Добавление/удаление админа (вызывается из HTML)
+  async function manageAdminAction(action) {
+    if (adminBusy) return;
+    if (!isAdmin) {
+      showToastNotification('⛔ Недостаточно прав');
+      return;
+    }
 
-    // 3. Отправляем обновление
-    const putRes = await fetch(GH_API_URL, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `token ${GH_TOKEN}`,
-        'Accept': 'application/vnd.github+json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        message: `Update admins.json via Mini App (${new Date().toISOString()})`,
-        content: base64Content,
-        sha: fileData.sha,
-        branch: GH_BRANCH
+    const inputEl = document.getElementById(action === 'add' ? 'admin-id-input' : 'admin-id-remove');
+    const id = (inputEl.value || '').trim();
+
+    if (!id || !/^\d+$/.test(id)) {
+      showToastNotification('⚠️ Введите корректный numeric ID');
+      return;
+    }
+
+    let newList = [...ADMIN_IDS];
+
+    if (action === 'add') {
+      if (newList.includes(id)) {
+        showToastNotification('Этот ID уже в списке');
+        return;
+      }
+      newList.push(id);
+    } else {
+      if (!newList.includes(id)) {
+        showToastNotification('Такого ID нет в списке');
+        return;
+      }
+      if (newList.length === 1) {
+        showToastNotification('⚠️ Нельзя удалить последнего администратора');
+        return;
+      }
+      newList = newList.filter(item => item !== id);
+    }
+
+    setAdminButtonsBusy(true);
+    const ok = await saveAdminsToGitHub(newList);
+    setAdminButtonsBusy(false);
+
+    if (ok) {
+      inputEl.value = '';
+      sendNotificationToAll(action === 'add'
+        ? `➕ Добавлен админ: ${id}`
+        : `➖ Удалён админ: ${id}`);
+    }
+  }
+
+  // Отрисовка списка админов в UI
+  function updateAdminsListUI() {
+    const listEl = document.getElementById('current-admins-list');
+    if (!listEl) return;
+    if (!ADMIN_IDS.length) {
+      listEl.innerHTML = '<span style="color:var(--text3)">Список пуст</span>';
+      return;
+    }
+    listEl.innerHTML = ADMIN_IDS.map(id =>
+      `🔹 <code>${id}</code>${id === currentTgId ? ' <span style="color:var(--cyan)">(вы)</span>' : ''}`
+    ).join('<br>');
+  }
+
+  // Динамическая отрисовка нижнего навигационного меню
+  function renderBottomMenu() {
+    const menuContainer = document.getElementById('custom-bottom-menu');
+    if (!menuContainer) return;
+
+    let menuHtml = `
+      <button class="nav-item active" id="nav-home" onclick="showSection('home')"><span class="nav-icon">🌕</span>Главная</button>
+      <button class="nav-item" id="nav-menu" onclick="showSection('menu')"><span class="nav-icon">🍹</span>Меню</button>
+      <button class="nav-item" id="nav-booking" onclick="showSection('booking')"><span class="nav-icon">📅</span>Бронь</button>
+    `;
+
+    if (isAdmin) {
+      menuHtml += `
+        <button class="nav-item" id="nav-scripts" onclick="showSection('scripts')"><span class="nav-icon">💬</span>Скрипты</button>
+        <button class="nav-item" id="nav-admin" onclick="showSection('admin')"><span class="nav-icon">⚡</span>Админу</button>
+      `;
+    } else {
+      menuHtml += `
+        <button class="nav-item" id="nav-scripts" onclick="showSection('scripts')"><span class="nav-icon">💬</span>Вопросы</button>
+        <button class="nav-item" id="nav-rules" onclick="showSection('rules')"><span class="nav-icon">📋</span>Правила</button>
+      `;
+    }
+    
+    menuContainer.innerHTML = menuHtml;
+
+    // Настройка отображения элементов интерфейса в зависимости от роли
+    const scriptsHeadingLabel = document.getElementById('scripts-heading-label');
+    const adminActionButtons = document.querySelectorAll('.admin-action-btn');
+
+    if (isAdmin) {
+      if (scriptsHeadingLabel) scriptsHeadingLabel.textContent = 'Скрипты ответов';
+      adminActionButtons.forEach(btn => btn.style.display = 'inline-block');
+    } else {
+      if (scriptsHeadingLabel) scriptsHeadingLabel.textContent = 'Вопросы и ответы';
+      adminActionButtons.forEach(btn => btn.style.display = 'none');
+    }
+  }
+
+  // Переключение между экранами/секциями приложения
+  function showSection(sectId) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+
+    const targetSect = document.getElementById('section-' + sectId);
+    const targetBtn = document.getElementById('nav-' + sectId);
+
+    if (targetSect) targetSect.classList.add('active');
+    if (targetBtn) targetBtn.classList.add('active');
+
+    currentSection = sectId;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Логика работы аккордеонов (дресс-код, правила, вопросы)
+  function toggleCard(header) {
+    const card = header.parentElement;
+    const isOpen = card.classList.contains('open');
+    
+    // Закрываем другие карточки в текущей секции для аккуратности
+    document.querySelectorAll('.info-card').forEach(c => c.classList.remove('open'));
+    
+    if (!isOpen) {
+      card.classList.add('open');
+      // Оповещение админов, если обычный гость читает FAQ
+      if (!isAdmin && currentSection === 'scripts') {
+        const titleText = header.querySelector('.ic-title')?.textContent || 'Неизвестная тема';
+        sendNotificationToAll(`👀 <b>Гость изучает вопросы на Луне</b>\n<b>Тема:</b> ${titleText}`);
+      }
+    }
+  }
+
+  // Открывает карточку "Вход, DJ-шоу и Караоке" на главной и плавно скроллит к ней
+  function openDjShowCard() {
+    showSection('home');
+    const card = document.getElementById('dj-show-card');
+    if (!card) return;
+
+    document.querySelectorAll('.info-card').forEach(c => c.classList.remove('open'));
+    card.classList.add('open');
+
+    // Небольшая задержка, чтобы секция home успела стать видимой перед скроллом
+    setTimeout(() => {
+      if (typeof card.scrollIntoView === 'function') {
+        card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 50);
+  }
+
+  // Выбор типа бронирования (Обычный стол / VIP)
+  function selectBookType(type) {
+    selectedBookType = type;
+    const tableBtn = document.getElementById('btc-table');
+    const vipBtn = document.getElementById('btc-vip');
+    
+    if (tableBtn) tableBtn.classList.remove('selected');
+    if (vipBtn) vipBtn.classList.remove('selected');
+    
+    const currentBtn = document.getElementById('btc-' + type);
+    if (currentBtn) currentBtn.classList.add('selected');
+  }
+
+  // Фильтрация категорий в меню
+  function showMenuCat(catId, btn) {
+    document.querySelectorAll('.menu-group').forEach(g => g.classList.remove('active'));
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    
+    const targetGroup = document.getElementById('mg-' + catId);
+    if (targetGroup) targetGroup.classList.add('active');
+    if (btn) btn.classList.add('active');
+  }
+
+  // Копирование скриптов для администраторов
+  function copyScriptText(elementId, topicName) {
+    const textEl = document.getElementById(elementId);
+    if (!textEl) return;
+    const textToCopy = textEl.innerText;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        showToastNotification('✅ Скопировано!');
+        sendNotificationToAll(`ℹ️ <b>Администратор скопировал скрипт</b>\n<b>Раздел:</b> ${topicName}`);
+      }).catch(() => fallbackCopyScript(textToCopy, topicName));
+    } else {
+      fallbackCopyScript(textToCopy, topicName);
+    }
+  }
+
+  // Резервный метод копирования, если API буфера обмена недоступно
+  function fallbackCopyScript(text, topicName) {
+    const el = document.createElement('textarea');
+    el.value = text;
+    el.style.position = 'fixed'; // Избегаем прокрутки страницы вниз
+    document.body.appendChild(el);
+    el.select();
+    try {
+      document.execCommand('copy');
+      showToastNotification('✅ Скопировано!');
+      sendNotificationToAll(`ℹ️ <b>Администратор скопировал скрипт</b>\n<b>Раздел:</b> ${topicName}`);
+    } catch (err) {
+      console.error('Не удалось скопировать текст:', err);
+    }
+    document.body.removeChild(el);
+  }
+
+  // Всплывающее уведомление внутри приложения
+  function showToastNotification(msg) {
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#7c3aed;color:#fff;padding:10px 20px;border-radius:30px;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 0 20px rgba(124,58,237,0.5);transition: opacity 0.3s;';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2000);
+  }
+
+  // Обработка и отправка формы бронирования
+  function submitBooking() {
+    const nameEl = document.getElementById('b-name');
+    const phoneEl = document.getElementById('b-phone');
+    const guestsEl = document.getElementById('b-guests');
+    const dateEl = document.getElementById('b-date');
+    const timeEl = document.getElementById('b-time');
+    const commentEl = document.getElementById('b-comment');
+
+    const name = nameEl ? nameEl.value.trim() : '';
+    const phone = phoneEl ? phoneEl.value.trim() : '';
+    const guests = guestsEl ? guestsEl.value : '1';
+    const date = dateEl ? dateEl.value : '';
+    const time = timeEl ? timeEl.value : '';
+    const comment = (commentEl && commentEl.value.trim()) ? commentEl.value.trim() : 'нет';
+    const typeLabel = selectedBookType === 'vip' ? 'VIP комната 👑' : 'Обычный столик 🪑';
+
+    if (!name || !phone || !date || !time) {
+      alert('Пожалуйста, заполните Имя, Телефон, Дату и Время бронирования.');
+      return;
+    }
+
+    // Бронь принимается на время с 19:00 вечера до 01:00 ночи (диапазон через полночь)
+    if (!isBookingTimeAllowed(time)) {
+      alert('Бронирование столиков возможно только на время с 19:00 до 01:00.\nПосле 01:00 столики занимаются в живой очереди.');
+      return;
+    }
+
+    const messageText = `🚨 <b>НОВАЯ ЗАЯВКА НА БРОНЬ (НА ЛУНЕ)</b> 🚨\n\n` +
+                        `<b>Тип места:</b> ${typeLabel}\n` +
+                        `<b>Имя:</b> ${name}\n` +
+                        `<b>Телефон:</b> ${phone}\n` +
+                        `<b>Кол-во гостей:</b> ${guests}\n` +
+                        `<b>Дата визита:</b> ${date}\n` +
+                        `<b>Время прихода:</b> ${time}\n` +
+                        `<b>Комментарий:</b> ${comment}\n\n` +
+                        `👤 Telegram ID: ${currentTgId || 'Не определён'}`;
+
+    sendNotificationToAll(messageText);
+
+    // Скрываем форму и показываем экран успешной отправки
+    const formBlock = document.getElementById('booking-form-block');
+    const successBlock = document.getElementById('booking-success-block');
+    
+    if (formBlock) formBlock.style.display = 'none';
+    if (successBlock) successBlock.classList.add('show');
+
+    // Очищаем поля формы для следующих бронирований
+    const formElement = document.querySelector('#section-booking form');
+    if (formElement) formElement.reset();
+  }
+
+  // Проверяет, что время попадает в допустимый диапазон брони: 19:00 - 01:00 (через полночь)
+  function isBookingTimeAllowed(timeStr) {
+    const [h, m] = timeStr.split(':').map(Number);
+    if (Number.isNaN(h) || Number.isNaN(m)) return false;
+    const minutes = h * 60 + m;
+    const startMinutes = 19 * 60;       // 19:00
+    const endMinutes = 1 * 60;          // 01:00 (следующего дня)
+    // Допустимо: время >= 19:00 ИЛИ время <= 01:00
+    return minutes >= startMinutes || minutes <= endMinutes;
+  }
+
+  // Функция массовой отправки уведомлений по массиву ADMIN_IDS
+  function sendNotificationToAll(text) {
+    ADMIN_IDS.forEach(chatId => {
+      const url = `https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`;
+      fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'HTML' })
       })
+      .then(res => {
+        if (!res.ok) {
+          console.error(`Ошибка отправки в чат ${chatId}:`, res.statusText);
+        }
+      })
+      .catch(err => console.error('Сбой сети при логировании:', err));
     });
-
-    if (!putRes.ok) {
-      const errBody = await putRes.json().catch(() => ({}));
-      throw new Error(errBody.message || ('HTTP ' + putRes.status));
-    }
-
-    ADMIN_IDS = newArray;
-    isAdmin = currentTgId !== null && ADMIN_IDS.includes(currentTgId);
-    renderAdminsList();
-    applyAdminVisibility();
-    return true;
-
-  } catch (e) {
-    console.error('Ошибка сохранения на GitHub:', e);
-    showToast('❌ Ошибка сохранения: ' + e.message);
-    return false;
   }
-}
 
-// Запуск
-loadAdmins();
+  // Запуск логики после полной загрузки DOM дерева
+  document.addEventListener('DOMContentLoaded', () => {
+    renderBottomMenu(); // мгновенная отрисовка с гостевыми пунктами, чтобы не было пустого экрана
+    loadAdmins();        // асинхронно подтянет статус админа и перерисует при необходимости
 
+    const dateInput = document.getElementById('b-date');
+    if (dateInput) {
+      dateInput.value = new Date().toISOString().split('T')[0];
+    }
+  });
 </script>
 </body>
 </html>
